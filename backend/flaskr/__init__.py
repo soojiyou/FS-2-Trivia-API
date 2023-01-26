@@ -8,6 +8,15 @@ from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
+
+def paginate_question(request, questions):
+    page = request.args.get('page', 1, int)
+    start = (page - 1) * QUESTIONS_PER_PAGE
+    end = start + QUESTIONS_PER_PAGE
+    page_questions = [q.format() for q in questions[start:end]]
+    return page_questions
+
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
@@ -16,17 +25,31 @@ def create_app(test_config=None):
     """
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     """
-
+    # CORS(app)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
     """
     @TODO: Use the after_request decorator to set Access-Control-Allow
     """
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Headers',
+                             'Content-Type, Authorization, true')
+        response.headers.add('Access-Control-Allow-Methods',
+                             'GET, PATCH, POST, DELETE, OPTIONS')
+        return response
 
     """
     @TODO:
     Create an endpoint to handle GET requests
     for all available categories.
     """
+    @app.route('/categories', methods=['GET'])
+    def get_all_categories():
+        categories = Category.query.order_by(Category.type).all()
 
+        return jsonify({
+            'categories': categories
+        })
 
     """
     @TODO:
@@ -40,6 +63,15 @@ def create_app(test_config=None):
     ten questions per page and pagination at the bottom of the screen for three pages.
     Clicking on the page numbers should update the questions.
     """
+    @app.route('/questions', methods=['GET'])
+    def get_questions():
+        questions = Question.quert.order_by(Question.id).all()
+        page_questions = paginate_question(request, questions)
+
+        return jsonify({
+            "questions": page_questions,
+            "total_questions": len(questions),
+        })
 
     """
     @TODO:
@@ -48,6 +80,15 @@ def create_app(test_config=None):
     TEST: When you click the trash icon next to a question, the question will be removed.
     This removal will persist in the database and when you refresh the page.
     """
+    @app.route('/questions/<int:question_id>', methods=['DELETE'])
+    def delete_question(question_id):
+        question = Question.query.get(question_id)
+        if not question:
+            return abort(404, f'No question found with id: {question_id}')
+        question.delete()
+        return jsonify({
+            'deleted': question_id
+        })
 
     """
     @TODO:
@@ -99,4 +140,3 @@ def create_app(test_config=None):
     """
 
     return app
-
