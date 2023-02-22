@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, abort, jsonify, abort
+from flask import Flask, request, abort, jsonify, abort, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
@@ -29,7 +29,7 @@ def create_app(test_config=None):
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     """
     # CORS(app)
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    CORS(app, resources={r'/*': {"origins": "*"}})
     """
     @TODO: Use the after_request decorator to set Access-Control-Allow
     """
@@ -46,10 +46,16 @@ def create_app(test_config=None):
     Create an endpoint to handle GET requests
     for all available categories.
     """
+    @app.route('/')
+    def home():
+        return redirect('/categories', code=302)
+
     @app.route('/categories', methods=['GET'])
     def get_all_categories():
-        categories = Category.query.order_by(Category.type).all()
-
+        categories = {}
+        # categories = Category.query.order_by(Category.type).all()
+        for category in Category.query.all():
+            categories[category.id] = category.type
         return jsonify({
             'categories': categories
         })
@@ -68,17 +74,9 @@ def create_app(test_config=None):
     """
     @app.route('/questions', methods=['GET'])
     def get_questions():
-
+        categories = {}
         all_questions = Question.query.order_by(Question.id).all()
         categories = Category.query.order_by(Category.type).all()
-
-        # page = int(request.args.get("page", 1))
-        # start = (page-1) * QUESTIONS_PER_PAGE
-        # end = start + QUESTIONS_PER_PAGE
-
-        # questions = [question.format() for question in all_questions]
-        # current_questions = questions[start:end]
-
         paged_questions = paginate_question(request, all_questions)
         if len(paged_questions) == 0:
             abort(404)
@@ -105,7 +103,6 @@ def create_app(test_config=None):
         return jsonify({
             'deleted': question_id
         })
-
 
 # https://github.com/skb1129/trivia-api/blob/master/backend/flaskr/__init__.py
 # https://github.com/NehaDuvvasi/trivia/blob/main/backend/flaskr/__init__.py
@@ -240,5 +237,11 @@ def create_app(test_config=None):
         return jsonify({"success": False,
                         "error": 400,
                         "message": "bad request"}), 400
+
+    @app.errorhandler(500)
+    def bad_resquest(error):
+        return jsonify({"success": False,
+                        "error": 500,
+                        "message": "Internal server error"}), 500
 
     return app
