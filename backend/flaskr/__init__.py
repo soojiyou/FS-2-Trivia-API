@@ -53,8 +53,9 @@ def create_app(test_config=None):
     @app.route('/categories', methods=['GET'])
     def get_all_categories():
         categories = {}
-        # categories = Category.query.order_by(Category.type).all()
-        for category in Category.query.all():
+        all_type_categories = Category.query.order_by(Category.type).all()
+
+        for category in all_type_categories:
             categories[category.id] = category.type
         return jsonify({
             'categories': categories
@@ -98,15 +99,12 @@ def create_app(test_config=None):
     def delete_question(question_id):
         question = Question.query.get(question_id)
         if not question:
-            return abort(404, f'No question found => question id: {question_id}')
+            return abort(404)
         question.delete()
         return jsonify({
             'deleted': question_id
         })
 
-# https://github.com/skb1129/trivia-api/blob/master/backend/flaskr/__init__.py
-# https://github.com/NehaDuvvasi/trivia/blob/main/backend/flaskr/__init__.py
-# https://github.com/BenMini/TriviaAPI/blob/master/backend/flaskr/__init__.py
     """
     @TODO:
     Create an endpoint to POST a new question,
@@ -126,7 +124,7 @@ def create_app(test_config=None):
         new_difficulty = request.json.get('difficulty')
 
         if not (new_question and new_answer and new_category and new_difficulty):
-            abort(400, 'missing required question objects from request')
+            abort(400)
 
         post_question = Question(question=new_question, answer=new_answer,
                                  category=new_category, difficulty=new_difficulty)
@@ -174,13 +172,18 @@ def create_app(test_config=None):
     def question_by_category(category_id):
         categorized_questions = Question.query.filter(
             Question.category == str(category_id)).all()
+        categories = {}
+        all_type_categories = Category.query.order_by(Category.type).all()
+
+        for category in all_type_categories:
+            categories[category.id] = category.type
 
         paged_questions = paginate_question(request, categorized_questions)
         if len(paged_questions) == 0:
             abort(404)
         return jsonify({
             'questions': paged_questions,
-            'categories': [category.type for category in Category.query.all()],
+            'categories': categories,
             'current_category': category_id,
             'total_questions': len(categorized_questions),
         })
@@ -207,7 +210,10 @@ def create_app(test_config=None):
         questions = Question.query.filter_by(category=category_id).filter(
             Question.id.notin_(prev_questions)).all()
 
-        question = questions.filter(Question.id.notin_(prev_questions)).first()
+        # question = questions.filter(Question.id.notin_(prev_questions)).first()
+        # if not question:
+        #     return jsonify({})
+        question = random.choice(questions)
         if not question:
             return jsonify({})
         return jsonify({
