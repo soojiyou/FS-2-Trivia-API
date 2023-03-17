@@ -3,6 +3,11 @@ from flask import Flask, request, abort, jsonify, abort, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
+import json
+import re
+
+from sqlalchemy.sql.operators import ColumnOperators
+from sqlalchemy import and_, func
 
 from models import setup_db, Question, Category
 
@@ -54,6 +59,8 @@ def create_app(test_config=None):
     def get_all_categories():
         categories = {}
         all_type_categories = Category.query.order_by(Category.type).all()
+        if not all_type_categories:
+            return abort(404)
 
         for category in all_type_categories:
             categories[category.id] = category.type
@@ -151,7 +158,7 @@ def create_app(test_config=None):
             abort(400)
 
         search_questions = Question.query.filter(
-            Question.question.ilike(f"%{search_term}%")).all()
+            Question.question.ilike("%" + search_term + "%")).all()
 
         paged_questions = paginate_question(request, search_questions)
 
@@ -168,7 +175,7 @@ def create_app(test_config=None):
     categories in the left column will cause only questions of that
     category to be shown.
     """
-    @app.route('/categories/<int:category_id>/questions', methods=['GET'])
+    @ app.route('/categories/<int:category_id>/questions', methods=['GET'])
     def question_by_category(category_id):
         categorized_questions = Question.query.filter(
             Question.category == str(category_id)).all()
@@ -199,38 +206,52 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
-    @app.route('/quiz', methods=['POST'])
+    @ app.route('/quiz', methods=['POST'])
     def get_questions_for_quiz():
-        prev_questions = request.json.get('previous_questions', None)
-        quiz_category = request.json.get('quiz_category', None)
-        category_id = quiz_category['id']
+        try:
+            prev_questions = request.json.get('previous_questions', None)
+            quiz_category = request.json.get('quiz_category', None)
 
-        if not quiz_category:
-            return abort(400)
-        questions = Question.query.filter_by(category=category_id).filter(
-            Question.id.notin_(prev_questions)).all()
+            # if quiz_category is None:
+            #     return abort(400)
 
-        # question = questions.filter(Question.id.notin_(prev_questions)).first()
-        # if not question:
-        #     return jsonify({})
-        question = random.choice(questions)
-        if not question:
-            return jsonify({})
-        return jsonify({
-            'question': question.format()
-        })
+            # ALL
+            if quiz_category['type'] == 'click':
+                questions = Question.query.filter(
+                    Question.id.notin_((prev_questions))).all()
+            else:
+                # category_id = quiz_category['id']
+                questions = Question.query.filter_by(category=quiz_category['id']).filter(
+                    Question.id.notin_(prev_questions)).all()
+
+                # question = questions.filter(Question.id.notin_(prev_questions)).first()
+                # if not question:
+                #     return jsonify({})
+                # randomly select next question from available questions
+            question = questions[random.randrange(
+                0, len(questions))].format() if len(
+                questions) > 0 else None
+
+            if not question:
+                return jsonify({})
+            return jsonify({
+                'question': question
+            })
+        except:
+            abort(422)
+
     """
     @TODO:
     Create error handlers for all expected errors
     including 404 and 422.
     """
-    @app.errorhandler(404)
+    @ app.errorhandler(404)
     def not_found(error):
         return jsonify({"success": False,
                         "error": 404,
                         "message": "Not found"}), 404
 
-    @app.errorhandler(422)
+    @ app.errorhandler(422)
     def unprocessable(error):
         return (
             jsonify({"success": False,
@@ -238,13 +259,13 @@ def create_app(test_config=None):
                      "message": "unprocessable"}), 422
         )
 
-    @app.errorhandler(400)
+    @ app.errorhandler(400)
     def bad_request(error):
         return jsonify({"success": False,
                         "error": 400,
                         "message": "bad request"}), 400
 
-    @app.errorhandler(500)
+    @ app.errorhandler(500)
     def bad_resquest(error):
         return jsonify({"success": False,
                         "error": 500,
