@@ -12,6 +12,7 @@
     "react-scripts": "^3.0.1"
   },
   "scripts": {
+    "react-scripts": "react-scripts",
     "start": "node node_modules/react-scripts/scripts/start.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
