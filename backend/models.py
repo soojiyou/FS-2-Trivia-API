@@ -2,7 +2,7 @@ import os
 from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
 import json
-from .settings import DB_NAME, DB_USER, DB_PASSWORD
+# from settings import DB_NAME, DB_USER, DB_PASSWORD
 
 
 # database_name = DB_NAME
@@ -27,27 +27,27 @@ setup_db(app)
 #     db.create_all()
 
 
-def setup_db(app):
-    ENV = 'prod'
+# def setup_db(app):
+#     ENV = 'prod'
 
-    if ENV == 'dev':
-        database_name = DB_NAME
-        database_path = 'postgresql://{}:{}@{}/{}'.format(
-            DB_USER, DB_PASSWORD, 'localhost:5432', database_name)
+#     if ENV == 'dev':
+#         database_name = DB_NAME
+#         database_path = 'postgresql://{}:{}@{}/{}'.format(
+#             DB_USER, DB_PASSWORD, 'localhost:5432', database_name)
 
-        app.debug = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = database_path
-        app.config['SECRET_KEY'] = os.urandom(32)
-    else:
-        app.debug = False
-        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-        app.config['SECRET_KEY'] = os.urandom(32)
+#         app.debug = True
+#         app.config['SQLALCHEMY_DATABASE_URI'] = database_path
+#         app.config['SECRET_KEY'] = os.urandom(32)
+#     else:
+#         app.debug = False
+#         app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+#         app.config['SECRET_KEY'] = os.urandom(32)
 
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    db.app = app
-    db.init_app(app)
-    db.create_all()
+#     db.app = app
+#     db.init_app(app)
+#     db.create_all()
 
 
 """

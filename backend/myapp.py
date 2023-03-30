@@ -8,8 +8,10 @@ import re
 
 from sqlalchemy.sql.operators import ColumnOperators
 from sqlalchemy import and_, func
+# from models import setup_db, Question, Category
 
-from .models import setup_db, Question, Category
+from models import Question, Category
+from settings import DB_NAME, DB_USER, DB_PASSWORD
 
 QUESTIONS_PER_PAGE = 10
 
@@ -23,6 +25,32 @@ def paginate_question(request, all_questions):
     questions = [question.format() for question in all_questions]
     current_questions = questions[start:end]
     return current_questions
+
+
+db = SQLAlchemy()
+
+
+def setup_db(app):
+    ENV = 'prod'
+
+    if ENV == 'dev':
+        database_name = DB_NAME
+        database_path = 'postgresql://{}:{}@{}/{}'.format(
+            DB_USER, DB_PASSWORD, 'localhost:5432', database_name)
+
+        app.debug = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = database_path
+        app.config['SECRET_KEY'] = os.urandom(32)
+    else:
+        app.debug = False
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+        app.config['SECRET_KEY'] = os.urandom(32)
+
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    db.app = app
+    db.init_app(app)
+    db.create_all()
 
 
 def create_app(test_config=None):
