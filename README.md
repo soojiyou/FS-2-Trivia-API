@@ -54,5 +54,27 @@ npm (a package manager for Node.js)
 
 ## Project demo example
 
+### Expected Endpoints
+Listed in frontend Readme in frontend folder (Udacity provided)
+
+### Real Application example in local
+
+#### Mainpage & List
+Show Categories and Questions
+
+<img src="https://user-images.githubusercontent.com/79179847/230259831-5fa95499-4f20-4c82-b0fa-857803892f3e.png" alt="Image Description" width="500" >
+
+#### Add
+User can add new question set with question, answer, difficulty, and category setting.
+<img src="https://user-images.githubusercontent.com/79179847/230260594-0bb7ff93-08ab-428b-86b6-14bacd23ae93.png" alt="Image Description" width="500" >
+
+#### Play
+User can choose category to play trivia. After playing a game, the user will get final score and can play new game.
+
+<img src="https://user-images.githubusercontent.com/79179847/230260765-5a1c77ab-3c28-44e3-830e-242be3a210b4.png" alt="Image Description" width="500" >
+<img src="https://user-images.githubusercontent.com/79179847/230261631-6a0ca2bb-44ad-4c87-99fc-e53e0a23d7a3.png" alt="Image Description" width="500" >
+<img src="https://user-images.githubusercontent.com/79179847/230261666-9c6e2470-7818-4ce2-b322-45c0e705db61.png" alt="Image Description" width="500" >
+
+
 
 
