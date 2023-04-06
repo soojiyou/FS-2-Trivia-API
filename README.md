@@ -60,7 +60,7 @@ Listed in frontend Readme in frontend folder (Udacity provided)
 ### Real Application example in local
 
 #### Mainpage & List
-Show Categories and Questions
+Page shows Categories and Questions. The user can delete the question.
 
 <img src="https://user-images.githubusercontent.com/79179847/230259831-5fa95499-4f20-4c82-b0fa-857803892f3e.png" alt="Image Description" width="500" >
 
