@@ -1,10 +1,21 @@
-# API Development and Documentation Final Project
+# Full Stack Project 2 - Trivia - API Development and Documentation Final Project
 
 ## Trivia App
+## Demo Website
+### Frontend : https://fs-trivia-frontend-syou.netlify.app
+### Backend : https://fs-trivia-backend-syou.onrender.com
 
+## Project Goal
+
+The ultimate aim of this project is to build a trivia app with a robust API that enables users to perform a wide range of actions, including retrieving questions, adding new questions, searching for questions, and participating in the trivia game. In addition, the app should be equipped with effective error handling for common HTTP errors to ensure seamless user experience. By successfully completing this trivia app, you will acquire essential skills required to plan, design, implement, and test an API. These skills are vital for developing applications that can efficiently communicate with other systems and services, and will certainly prove valuable for your future projects.
+
+
+## Introduction
 Udacity is invested in creating bonding experiences for its employees and students. A bunch of team members got the idea to hold trivia on a regular basis and created a webpage to manage the trivia app and play the game, but their API experience is limited and still needs to be built out.
 
-That's where you come in! Help them finish the trivia app so they can start holding trivia and seeing who's the most knowledgeable of the bunch. The application must:
+That's where you come in! Help them finish the trivia app so they can start holding trivia and seeing who's the most knowledgeable of the bunch. 
+
+The application requirements:
 
 1. Display questions - both all questions and by category. Questions should show the question, category and difficulty rating by default and can show/hide the answer.
 2. Delete questions.
@@ -12,38 +23,61 @@ That's where you come in! Help them finish the trivia app so they can start hold
 4. Search for questions based on a text query string.
 5. Play the quiz game, randomizing either all questions or within a specific category.
 
-Completing this trivia app will give you the ability to structure plan, implement, and test an API - skills essential for enabling your future applications to communicate with others.
-
-## Starting and Submitting the Project
-
-[Fork](https://help.github.com/en/articles/fork-a-repo) the project repository and [clone](https://help.github.com/en/articles/cloning-a-repository) your forked repository to your machine. Work on the project locally and make sure to push all your changes to the remote repository before submitting the link to your repository in the Classroom.
-
-## About the Stack
-
-We started the full stack application for you. It is designed with some key functional areas:
+## Technology Stack
 
 ### Backend
 
-The [backend](./backend/README.md) directory contains a partially completed Flask and SQLAlchemy server. You will work primarily in `__init__.py` to define your endpoints and can reference models.py for DB and SQLAlchemy setup. These are the files you'd want to edit in the backend:
+Python 3.7
 
-1. `backend/flaskr/__init__.py`
-2. `backend/test_flaskr.py`
+Flask (a Python web framework for building APIs)
 
-> View the [Backend README](./backend/README.md) for more details.
+SQLAlchemy (a Python SQL toolkit and ORM for database handling)
+
+Flask-CORS (an extension for handling cross-origin requests)
+
+Postgres (a relational database management system)
+
+unittest (a testing framework for Python)
+
+Test-Driven Development (TDD) methodology
+
 
 ### Frontend
 
-The [frontend](./frontend/README.md) directory contains a complete React frontend to consume the data from the Flask server. If you have prior experience building a frontend application, you should feel free to edit the endpoints as you see fit for the backend you design. If you do not have prior experience building a frontend application, you should read through the frontend code before starting and make notes regarding:
+React (a JavaScript library for building user interfaces)
 
-1. What are the end points and HTTP methods the frontend is expecting to consume?
-2. How are the requests from the frontend formatted? Are they expecting certain parameters or payloads?
+JavaScript
 
-Pay special attention to what data the frontend is expecting from each API response to help guide how you format your API. The places where you may change the frontend behavior, and where you should be looking for the above information, are marked with `TODO`. These are the files you'd want to edit in the frontend:
+HTML
 
-1. `frontend/src/components/QuestionView.js`
-2. `frontend/src/components/FormView.js`
-3. `frontend/src/components/QuizView.js`
+CSS
 
-By making notes ahead of time, you will practice the core skill of being able to read and understand code and will have a simple plan to follow to build out the endpoints of your backend API.
+npm (a package manager for Node.js)
 
-> View the [Frontend README](./frontend/README.md) for more details.
+
+## Project demo example
+
+### Expected Endpoints
+Listed in frontend Readme in frontend folder (Udacity provided)
+
+### Real Application example in local
+
+#### Mainpage & List
+Page shows Categories and Questions. The user can delete the question.
+
+<img src="https://user-images.githubusercontent.com/79179847/230259831-5fa95499-4f20-4c82-b0fa-857803892f3e.png" alt="Image Description" width="500" >
+
+#### Add
+User can add new question set with question, answer, difficulty, and category setting.
+<img src="https://user-images.githubusercontent.com/79179847/230260594-0bb7ff93-08ab-428b-86b6-14bacd23ae93.png" alt="Image Description" width="500" >
+
+#### Play
+User can choose category to play trivia. After playing a game, the user will get final score and can play new game.
+
+<img src="https://user-images.githubusercontent.com/79179847/230260765-5a1c77ab-3c28-44e3-830e-242be3a210b4.png" alt="Image Description" width="500" >
+<img src="https://user-images.githubusercontent.com/79179847/230261631-6a0ca2bb-44ad-4c87-99fc-e53e0a23d7a3.png" alt="Image Description" width="500" >
+<img src="https://user-images.githubusercontent.com/79179847/230261666-9c6e2470-7818-4ce2-b322-45c0e705db61.png" alt="Image Description" width="500" >
+
+
+
+
