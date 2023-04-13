@@ -19,21 +19,30 @@ class QuizView extends Component {
     };
   }
 
+  // componentDidMount() {
+  //   $.ajax({
+  //     url: `/categories`, //TODO: update request URL
+  //     type: 'GET',
+  //     success: (result) => {
+  //       this.setState({ categories: result.categories });
+  //       return;
+  //     },
+  //     error: (error) => {
+  //       alert('Unable to load categories. Please try your request again');
+  //       return;
+  //     },
+  //   });
+  // }
   componentDidMount() {
-    $.ajax({
-      url: `/categories`, //TODO: update request URL
-      type: 'GET',
-      success: (result) => {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/categories`)
+      .then((response) => response.json())
+      .then((result) => {
         this.setState({ categories: result.categories });
-        return;
-      },
-      error: (error) => {
+      })
+      .catch((error) => {
         alert('Unable to load categories. Please try your request again');
-        return;
-      },
-    });
+      });
   }
-
   selectCategory = ({ type, id = 0 }) => {
     this.setState({ quizCategory: { type, id } }, this.getNextQuestion);
   };
@@ -42,40 +51,70 @@ class QuizView extends Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  getNextQuestion = () => {
+  // getNextQuestion = () => {
+  //   const previousQuestions = [...this.state.previousQuestions];
+  //   if (this.state.currentQuestion.id) {
+  //     previousQuestions.push(this.state.currentQuestion.id);
+  //   }
+
+  //   $.ajax({
+  //     url: '/quiz', //TODO: update request URL
+  //     type: 'POST',
+  //     dataType: 'json',
+  //     contentType: 'application/json',
+  //     data: JSON.stringify({
+  //       previous_questions: previousQuestions,
+  //       quiz_category: this.state.quizCategory,
+  //     }),
+  //     xhrFields: {
+  //       withCredentials: true,
+  //     },
+  //     crossDomain: true,
+  //     success: (result) => {
+  //       this.setState({
+  //         showAnswer: false,
+  //         previousQuestions: previousQuestions,
+  //         currentQuestion: result.question,
+  //         guess: '',
+  //         forceEnd: result.question ? false : true,
+  //       });
+  //       return;
+  //     },
+  //     error: (error) => {
+  //       alert('Unable to load question. Please try your request again');
+  //       return;
+  //     },
+  //   });
+  // };
+
+  getNextQuestion = async () => {
     const previousQuestions = [...this.state.previousQuestions];
     if (this.state.currentQuestion.id) {
       previousQuestions.push(this.state.currentQuestion.id);
     }
 
-    $.ajax({
-      url: '/quiz', //TODO: update request URL
-      type: 'POST',
-      dataType: 'json',
-      contentType: 'application/json',
-      data: JSON.stringify({
-        previous_questions: previousQuestions,
-        quiz_category: this.state.quizCategory,
-      }),
-      xhrFields: {
-        withCredentials: true,
-      },
-      crossDomain: true,
-      success: (result) => {
-        this.setState({
-          showAnswer: false,
-          previousQuestions: previousQuestions,
-          currentQuestion: result.question,
-          guess: '',
-          forceEnd: result.question ? false : true,
-        });
-        return;
-      },
-      error: (error) => {
-        alert('Unable to load question. Please try your request again');
-        return;
-      },
-    });
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/quiz`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          previous_questions: previousQuestions,
+          quiz_category: this.state.quizCategory,
+        }),
+      });
+      const result = await response.json();
+      this.setState({
+        showAnswer: false,
+        previousQuestions: previousQuestions,
+        currentQuestion: result.question,
+        guess: '',
+        forceEnd: result.question ? false : true,
+      });
+    } catch (error) {
+      alert('Unable to load question. Please try your request again');
+    }
   };
 
   submitGuess = (event) => {

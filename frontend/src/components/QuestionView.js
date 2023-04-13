@@ -20,25 +20,42 @@ class QuestionView extends Component {
     this.getQuestions();
   }
 
-  getQuestions = () => {
-    $.ajax({
-      url: `/questions?page=${this.state.page}`, //TODO: update request URL
-      type: 'GET',
-      success: (result) => {
-        this.setState({
-          questions: result.questions,
-          totalQuestions: result.total_questions,
-          categories: result.categories,
-          currentCategory: result.current_category,
-        });
-        return;
-      },
-      error: (error) => {
-        alert('Unable to load questions. Please try your request again');
-        return;
-      },
-    });
+  // getQuestions = () => {
+  //   $.ajax({
+  //     url: `/questions?page=${this.state.page}`, //TODO: update request URL
+  //     type: 'GET',
+  //     success: (result) => {
+  //       this.setState({
+  //         questions: result.questions,
+  //         totalQuestions: result.total_questions,
+  //         categories: result.categories,
+  //         currentCategory: result.current_category,
+  //       });
+  //       return;
+  //     },
+  //     error: (error) => {
+  //       alert('Unable to load questions. Please try your request again');
+  //       return;
+  //     },
+  //   });
+  // };
+  getQuestions = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/questions?page=${this.state.page}`
+      );
+      const result = await response.json();
+      this.setState({
+        questions: result.questions,
+        totalQuestions: result.total_questions,
+        categories: result.categories,
+        currentCategory: result.current_category,
+      });
+    } catch (error) {
+      alert('Unable to load questions. Please try your request again');
+    }
   };
+
 
   selectPage(num) {
     this.setState({ page: num }, () => this.getQuestions());

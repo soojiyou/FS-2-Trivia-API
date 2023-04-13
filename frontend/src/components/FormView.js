@@ -14,47 +14,82 @@ class FormView extends Component {
     };
   }
 
+  // componentDidMount() {
+  //   $.ajax({
+  //     url: `/categories`, //TODO: update request URL
+  //     type: 'GET',
+  //     success: (result) => {
+  //       this.setState({ categories: result.categories });
+  //       return;
+  //     },
+  //     error: (error) => {
+  //       alert('Unable to load categories. Please try your request again');
+  //       return;
+  //     },
+  //   });
+  // }
   componentDidMount() {
-    $.ajax({
-      url: `/categories`, //TODO: update request URL
-      type: 'GET',
-      success: (result) => {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/categories`)
+      .then((response) => response.json())
+      .then((result) => {
         this.setState({ categories: result.categories });
-        return;
-      },
-      error: (error) => {
+      })
+      .catch((error) => {
         alert('Unable to load categories. Please try your request again');
-        return;
-      },
-    });
+      });
   }
 
+  // submitQuestion = (event) => {
+  //   event.preventDefault();
+  //   $.ajax({
+  //     url: '/questions', //TODO: update request URL
+  //     type: 'POST',
+  //     dataType: 'json',
+  //     contentType: 'application/json',
+  //     data: JSON.stringify({
+  //       question: this.state.question,
+  //       answer: this.state.answer,
+  //       difficulty: this.state.difficulty,
+  //       category: this.state.category,
+  //     }),
+  //     xhrFields: {
+  //       withCredentials: true,
+  //     },
+  //     crossDomain: true,
+  //     success: (result) => {
+  //       document.getElementById('add-question-form').reset();
+  //       return;
+  //     },
+  //     error: (error) => {
+  //       alert('Unable to add question. Please try your request again');
+  //       return;
+  //     },
+  //   });
+  // };
   submitQuestion = (event) => {
     event.preventDefault();
-    $.ajax({
-      url: '/questions', //TODO: update request URL
-      type: 'POST',
-      dataType: 'json',
-      contentType: 'application/json',
-      data: JSON.stringify({
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/questions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         question: this.state.question,
         answer: this.state.answer,
         difficulty: this.state.difficulty,
         category: this.state.category,
       }),
-      xhrFields: {
-        withCredentials: true,
-      },
-      crossDomain: true,
-      success: (result) => {
-        document.getElementById('add-question-form').reset();
-        return;
-      },
-      error: (error) => {
+    })
+      .then((response) => {
+        if (response.ok) {
+          document.getElementById('add-question-form').reset();
+        } else {
+          throw new Error('Unable to add question');
+        }
+      })
+      .catch((error) => {
         alert('Unable to add question. Please try your request again');
-        return;
-      },
-    });
+      });
   };
 
   handleChange = (event) => {
