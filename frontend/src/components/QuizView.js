@@ -33,22 +33,35 @@ class QuizView extends Component {
   //     },
   //   });
   // }
-  componentDidMount() {
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/categories`)
-      .then((response) => response.json())
-      .then((result) => {
-        this.setState({ categories: result.categories });
-      })
-      .catch((error) => {
-        alert('Unable to load categories. Please try your request again');
-      });
-  }
-  selectCategory = ({ type, id = 0 }) => {
-    this.setState({ quizCategory: { type, id } }, this.getNextQuestion);
-  };
+  // componentDidMount() {
+  //   fetch(`${process.env.REACT_APP_BACKEND_URL}/categories`)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       this.setState({ categories: result.categories });
+  //     })
+  //     .catch((error) => {
+  //       alert('Unable to load categories. Please try your request again');
+  //     });
+  // }
+  // selectCategory = ({ type, id = 0 }) => {
+  //   this.setState({ quizCategory: { type, id } }, this.getNextQuestion);
+  // };
 
-  handleChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
+  // handleChange = (event) => {
+  //   this.setState({ [event.target.name]: event.target.value });
+  // };
+  async componentDidMount() {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/categories`);
+      const result = await response.json();
+      this.setState({ categories: result.categories });
+    } catch (error) {
+      alert('Unable to load categories. Please try your request again');
+    }
+  }
+
+  selectCategory = async ({ type, id = 0 }) => {
+    this.setState({ quizCategory: { type, id } }, await this.getNextQuestion);
   };
 
   // getNextQuestion = () => {

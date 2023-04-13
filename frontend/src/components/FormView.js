@@ -28,15 +28,25 @@ class FormView extends Component {
   //     },
   //   });
   // }
-  componentDidMount() {
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/categories`)
-      .then((response) => response.json())
-      .then((result) => {
-        this.setState({ categories: result.categories });
-      })
-      .catch((error) => {
-        alert('Unable to load categories. Please try your request again');
-      });
+
+  // componentDidMount() {
+  //   fetch(`${process.env.REACT_APP_BACKEND_URL}/categories`)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       this.setState({ categories: result.categories });
+  //     })
+  //     .catch((error) => {
+  //       alert('Unable to load categories. Please try your request again');
+  //     });
+  // }
+  async componentDidMount() {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/categories`);
+      const result = await response.json();
+      this.setState({ categories: result.categories });
+    } catch (error) {
+      alert('Unable to load categories. Please try your request again');
+    }
   }
 
   // submitQuestion = (event) => {
@@ -66,30 +76,51 @@ class FormView extends Component {
   //     },
   //   });
   // };
-  submitQuestion = (event) => {
+  // submitQuestion = (event) => {
+  //   event.preventDefault();
+  //   fetch(`${process.env.REACT_APP_BACKEND_URL}/questions`, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       question: this.state.question,
+  //       answer: this.state.answer,
+  //       difficulty: this.state.difficulty,
+  //       category: this.state.category,
+  //     }),
+  //   })
+  //     .then((response) => {
+  //       if (response.ok) {
+  //         document.getElementById('add-question-form').reset();
+  //       } else {
+  //         throw new Error('Unable to add question');
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       alert('Unable to add question. Please try your request again');
+  //     });
+  // };
+  submitQuestion = async (event) => {
     event.preventDefault();
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/questions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        question: this.state.question,
-        answer: this.state.answer,
-        difficulty: this.state.difficulty,
-        category: this.state.category,
-      }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          document.getElementById('add-question-form').reset();
-        } else {
-          throw new Error('Unable to add question');
-        }
-      })
-      .catch((error) => {
-        alert('Unable to add question. Please try your request again');
+    try {
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Credentials': 'true',
+        },
+        body: JSON.stringify({
+          question: this.state.question,
+          answer: this.state.answer,
+          difficulty: this.state.difficulty,
+          category: this.state.category,
+        }),
       });
+      document.getElementById('add-question-form').reset();
+    } catch (error) {
+      alert('Unable to add question. Please try your request again');
+    }
   };
 
   handleChange = (event) => {
